@@ -1,4 +1,4 @@
-package com.github.steffeleffe.calendar;
+package com.steffeleffe.familycalendar.calendar;
 
 // Copyright 2018 Google LLC
 //

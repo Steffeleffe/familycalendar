@@ -1,6 +1,7 @@
-package com.github.steffeleffe.calendar;
+package com.steffeleffe.familycalendar.calendar;
 
 import com.google.api.services.calendar.model.Event;
+import io.quarkus.scheduler.Scheduled;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -23,14 +24,23 @@ public class CalendarService {
             "66aglhcacpcpupnhh9fian0a1g@group.calendar.google.com",
             "hdn3t11kjru1fs823pee8g9bso@group.calendar.google.com"
     );
+    private List<CalendarEvent> calendarEvents;
 
-    public List<CalendarEvent> getEvents() {
-        return googleCalendarIds.stream()
+
+    public synchronized List<CalendarEvent> getEvents() {
+        if (calendarEvents == null) {
+            importEvents();
+        }
+        return calendarEvents;
+    }
+
+    @Scheduled(every="30m")
+    public void importEvents() {
+        calendarEvents = googleCalendarIds.stream()
                 .map(id -> importer.fetchEvents(id))
                 .flatMap(Collection::stream)
                 .map(CalendarService::toCalendarEvent)
                 .collect(Collectors.toList());
-
     }
 
     private static CalendarEvent toCalendarEvent(Event event) {

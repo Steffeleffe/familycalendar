@@ -1,6 +1,6 @@
-package com.github.steffeleffe;
+package com.steffeleffe.familycalendar;
 
-import com.github.steffeleffe.calendar.CalendarEvent;
+import com.steffeleffe.familycalendar.calendar.CalendarEvent;
 import io.quarkus.qute.TemplateExtension;
 
 import java.time.ZoneId;

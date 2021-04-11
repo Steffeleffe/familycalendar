@@ -1,4 +1,4 @@
-package com.github.steffeleffe.calendar;
+package com.steffeleffe.familycalendar.calendar;
 
 public enum Participant {
     STEFFEN("Steffen", "S", "cornflowerblue"),

@@ -1,4 +1,4 @@
-package com.github.steffeleffe;
+package com.steffeleffe.familycalendar;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

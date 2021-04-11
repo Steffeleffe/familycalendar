@@ -1,6 +1,6 @@
-package com.github.steffeleffe;
+package com.steffeleffe.familycalendar;
 
-import com.github.steffeleffe.calendar.CalendarEvent;
+import com.steffeleffe.familycalendar.calendar.CalendarEvent;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

@@ -1,8 +1,8 @@
-package com.github.steffeleffe;
+package com.steffeleffe.familycalendar;
 
-import com.github.steffeleffe.calendar.CalendarEvent;
-import com.github.steffeleffe.calendar.CalendarService;
-import com.github.steffeleffe.calendar.Day;
+import com.steffeleffe.familycalendar.calendar.CalendarEvent;
+import com.steffeleffe.familycalendar.calendar.CalendarService;
+import com.steffeleffe.familycalendar.calendar.Day;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Path("/calendar/index.html")
+@Path("/calendar")
 public class CalendarResource {
 
     @Inject
@@ -40,6 +40,19 @@ public class CalendarResource {
         ArrayList<String> list = new ArrayList<>(timeSlotSet);
         list.sort(null); // natural ordering for String
         return list;
+    }
+
+    @GET
+    @Path("refresh")
+    public void refresh() {
+        calendarService.importEvents();
+    }
+
+    @GET
+    @Path("events")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CalendarEvent> events() {
+        return calendarService.getEvents();
     }
 
 }

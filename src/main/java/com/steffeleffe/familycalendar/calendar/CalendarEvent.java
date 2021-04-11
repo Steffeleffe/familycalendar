@@ -1,4 +1,4 @@
-package com.github.steffeleffe.calendar;
+package com.steffeleffe.familycalendar.calendar;
 
 import java.time.Instant;
 import java.util.Collections;

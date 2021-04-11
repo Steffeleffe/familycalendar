@@ -1,10 +1,9 @@
-package com.github.steffeleffe.calendar;
+package com.steffeleffe.familycalendar.calendar;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +17,7 @@ class CalendarServiceTest {
 
         Set<Participant> participants = CalendarService.getParticipants(description);
 
-        assertThat(participants).containsExactlyInAnyOrder(Participant.EBBE, Participant.ADA);
+        Assertions.assertThat(participants).containsExactlyInAnyOrder(Participant.EBBE, Participant.ADA);
     }
 
     @Test
@@ -27,14 +26,14 @@ class CalendarServiceTest {
 
         Set<Participant> participants = CalendarService.getParticipants(description);
 
-        assertThat(participants).isEmpty();
+        Assertions.assertThat(participants).isEmpty();
     }
 
     @Test
     void getParticipants_NoDescription() {
         Set<Participant> participants = CalendarService.getParticipants(null);
 
-        assertThat(participants).isEmpty();
+        Assertions.assertThat(participants).isEmpty();
     }
 
     @Test
@@ -43,7 +42,7 @@ class CalendarServiceTest {
 
         Set<Participant> participants = CalendarService.getParticipants(description);
 
-        assertThat(participants).containsExactlyInAnyOrder(Participant.EBBE, Participant.ADA, Participant.RIKKE, Participant.MARIE, Participant.STEFFEN);
+        Assertions.assertThat(participants).containsExactlyInAnyOrder(Participant.EBBE, Participant.ADA, Participant.RIKKE, Participant.MARIE, Participant.STEFFEN);
     }
 
     @Test
