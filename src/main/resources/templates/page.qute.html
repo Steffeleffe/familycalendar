@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="google" content="notranslate"/>
+        <title>Family calendar</title>
+        <style>
+            body {
+                 background-color: darkslategrey;
+            }
+             .calendar {
+                 display: grid;
+                 grid-template-rows: [dayHeader] auto{#for slot in timeSlots} [time{slot}] auto{/for} ;
+                 grid-template-columns: [day0] 1fr 2em [day1] 1fr 2em [day2] 1fr 2em [day3] 1fr 2em [day4] 1fr ;
+                 grid-gap: 0.1em;
+            }
+             .day {
+                 font-weight: bold;
+                 font-size: larger;
+                 font-family: sans-serif;
+                 text-align: center;
+                 color: white;
+            }
+             .event {
+                 border-style: solid;
+                 padding: 0.5em;
+            }
+             .day {
+                 font-weight: bold;
+                 font-size: larger;
+                 font-family: sans-serif;
+                 text-align: center;
+                 color: white;
+            }
+             .eventTime {
+                 font-size: small;
+                 font-family: sans-serif;
+            }
+             .eventDescription {
+                 font-weight: bold;
+                 color: white;
+                 font-family: sans-serif;
+            }
+             .eventImage {
+                 max-width: 3em;
+                 max-height: 3em;
+                 float: right;
+            }
+             .eventParticipants {
+                 display: flex;
+            }
+             .eventParticipant {
+                 font-family: sans-serif;
+                 border: 2pt solid white;
+                 border-radius: 50%;
+                 width: 1em;
+                 height: 1em;
+                 padding: .5em;
+                 text-align: center;
+                 font-size: 10pt;
+                 font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="calendar">
+            {#for day in days}
+            <div class="day" style="grid-row: dayHeader; grid-column: day{day.index}">{day.name}</div>
+            {/for}
+
+            {#for event in events}
+            <div class="event" style="grid-row: time{event.timeSlot}; grid-column: day{event.dayIndex}; background-color: {event.color}">
+                {#if event.imageUrl != null}
+                <img class="eventImage" src="{event.imageUrl}"/>
+                {/if}
+                <div class="eventTime">{event.timeString}</div>
+                <div class="eventDescription">{event.summary}</div>
+                <div class="eventParticipants">
+                    {#for participant in event.participants.orEmpty}
+                    <div class="eventParticipant" style="background-color: {participant.color}">{participant.abbreviation}</div>
+                    {/for}
+                </div>
+            </div>
+            {/for}
+        </div>
+    </body>
+</html>
