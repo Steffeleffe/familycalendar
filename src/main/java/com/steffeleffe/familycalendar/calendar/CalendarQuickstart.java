@@ -46,7 +46,7 @@ import java.util.List;
 
 @ApplicationScoped
 public class CalendarQuickstart {
-    private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
+    private static final String APPLICATION_NAME = "Family Calendar";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 

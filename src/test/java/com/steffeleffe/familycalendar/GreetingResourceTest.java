@@ -13,7 +13,7 @@ public class GreetingResourceTest {
     @Test
     public void testHelloEndpoint() {
         given()
-          .when().get("/calendar/index.html")
+          .when().get("/calendar")
           .then()
              .statusCode(200)
              .body(containsString(("Family calendar")));
