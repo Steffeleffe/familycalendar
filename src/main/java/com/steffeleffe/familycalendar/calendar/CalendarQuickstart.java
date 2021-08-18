@@ -100,8 +100,6 @@ public class CalendarQuickstart {
                     .setMaxResults(1000)
                     .setTimeMin(new DateTime(todayTrimmedToMidnight.toEpochMilli()))
                     .setTimeMax(new DateTime(fiveDaysFromNowTrimmedToMidnight.toEpochMilli()))
-                    .setMaxResults(10)
-                    .setTimeMin(now)
                     .setOrderBy("startTime")
                     .setSingleEvents(true)
                     .execute();

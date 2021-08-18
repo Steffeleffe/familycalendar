@@ -11,19 +11,22 @@ public class CalendarEvent {
     public final Instant startTime;
     public final Instant endTime;
     public final Set<Participant> participants;
+    public final String calendarId;
 
     private CalendarEvent(String id,
                           String summary,
                           String imageUrl,
                           Instant startTime,
                           Instant endTime,
-                          Set<Participant> participants) {
+                          Set<Participant> participants,
+                          String calendarId) {
         this.id = id;
         this.summary = summary;
         this.imageUrl = imageUrl;
         this.startTime = startTime;
         this.endTime = endTime;
         this.participants = Collections.unmodifiableSet(participants);
+        this.calendarId = calendarId;
     }
 
     public static class Builder {
@@ -33,6 +36,7 @@ public class CalendarEvent {
         private Instant startTime;
         private Instant endTime;
         private Set<Participant> participants = Collections.emptySet();
+        private String calendarId;
 
         public Builder setId(String id) {
             this.id = id;
@@ -54,8 +58,9 @@ public class CalendarEvent {
             return this;
         }
 
-        public void setEndTime(Instant endTime) {
+        public Builder setEndTime(Instant endTime) {
             this.endTime = endTime;
+            return this;
         }
 
         public Builder setParticipants(Set<Participant> participants) {
@@ -63,10 +68,14 @@ public class CalendarEvent {
             return this;
         }
 
-        public CalendarEvent build() {
-            return new CalendarEvent(id, summary, imageUrl, startTime, endTime, participants);
+        public Builder setCalendarId(String calendarId) {
+            this.calendarId = calendarId;
+            return this;
         }
 
+        public CalendarEvent build() {
+            return new CalendarEvent(id, summary, imageUrl, startTime, endTime, participants, calendarId);
+        }
 
     }
 
