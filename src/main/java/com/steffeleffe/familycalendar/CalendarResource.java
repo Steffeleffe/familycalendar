@@ -1,6 +1,7 @@
 package com.steffeleffe.familycalendar;
 
 import com.steffeleffe.familycalendar.calendar.CalendarEvent;
+import com.steffeleffe.familycalendar.calendar.CalendarQuickstart;
 import com.steffeleffe.familycalendar.calendar.CalendarService;
 import com.steffeleffe.familycalendar.calendar.Day;
 import io.quarkus.qute.Template;
@@ -11,6 +12,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,9 @@ public class CalendarResource {
 
     @Inject
     CalendarService calendarService;
+
+    @Inject
+    CalendarQuickstart importer;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -54,5 +60,13 @@ public class CalendarResource {
     public List<CalendarEvent> events() {
         return calendarService.getEvents();
     }
+
+    @GET
+    @Path("login")
+    public void login() throws GeneralSecurityException, IOException {
+        importer.initialize();
+        calendarService.importEvents();
+    }
+
 
 }

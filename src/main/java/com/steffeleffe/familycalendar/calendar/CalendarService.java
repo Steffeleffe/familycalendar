@@ -47,31 +47,16 @@ public class CalendarService {
         this.calendarEvents = importedEvents;
     }
 
-    static class EventHolder {
-        final String description;
-        final String calendarId;
-
-        public EventHolder(String calendarId, String description) {
-            this.calendarId = calendarId;
-            this.description = description;
-        }
-
-    }
 
     private static CalendarEvent toCalendarEvent(Event event, String calendarId) {
-        new EventHolder(event.getId(), event.getDescription());
-
-        CalendarEvent.Builder builder = new CalendarEvent.Builder();
-
-        builder.setId(event.getId());
-        builder.setSummary(event.getSummary());
-        builder.setStartTime(Instant.ofEpochMilli(event.getStart().getDateTime().getValue()));
-        builder.setEndTime(Instant.ofEpochMilli(event.getEnd().getDateTime().getValue()));
-        builder.setImageUrl(getImageUrl(event.getDescription(), calendarId));
-        builder.setParticipants(getParticipants(event.getDescription(), calendarId));
-        builder.setCalendarId(calendarId);
-
-        return builder.build();
+        return new CalendarEvent(
+                event.getId(),
+                event.getSummary(),
+                getImageUrl(event.getDescription(), calendarId),
+                Instant.ofEpochMilli(event.getStart().getDateTime().getValue()),
+                Instant.ofEpochMilli(event.getEnd().getDateTime().getValue()),
+                getParticipants(event.getDescription(), calendarId),
+                calendarId);
     }
 
     static Set<Participant> getParticipants(String eventDescription, String calendarId) {

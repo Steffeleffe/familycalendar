@@ -2,16 +2,12 @@ package com.steffeleffe.familycalendar.calendar;
 
 import java.util.*;
 
-public class Day {
-    public int index;
-    public String name;
+public record Day(
+        int index,
+        String name
+) {
 
-    private Day(int index, String name) {
-        this.index = index;
-        this.name = name;
-    }
-
-    private static Locale locale = new Locale("da", "DK", "DK");
+    private static final Locale locale = new Locale("da", "DK", "DK");
 
     public static List<Day> getFiveDays() {
         ArrayList<Day> days = new ArrayList<>(5);
@@ -25,3 +21,4 @@ public class Day {
         return days;
     }
 }
+

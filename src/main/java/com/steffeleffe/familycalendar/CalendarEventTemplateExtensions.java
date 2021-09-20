@@ -17,16 +17,16 @@ public class CalendarEventTemplateExtensions {
     private static DateTimeFormatter FORMATTER2 = DateTimeFormatter.ofPattern("HHmm");
 
     static int dayIndex(CalendarEvent event) {
-        return (int)(ZonedDateTime.ofInstant(event.startTime, ZONE).getLong(ChronoField.EPOCH_DAY)
+        return (int)(ZonedDateTime.ofInstant(event.startTime(), ZONE).getLong(ChronoField.EPOCH_DAY)
                 - ZonedDateTime.now(ZONE).getLong(ChronoField.EPOCH_DAY));
     }
 
     static String timeString(CalendarEvent event) {
-        return event.startTime.atZone(ZONE).format(FORMATTER) + '-' + event.endTime.atZone(ZONE).format(FORMATTER);
+        return event.startTime().atZone(ZONE).format(FORMATTER) + '-' + event.endTime().atZone(ZONE).format(FORMATTER);
     }
 
     static String timeSlot(CalendarEvent event) {
-        return event.startTime.atZone(ZONE).format(FORMATTER2);
+        return event.startTime().atZone(ZONE).format(FORMATTER2);
     }
 
     static String color(CalendarEvent event) {

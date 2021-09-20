@@ -22,8 +22,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
@@ -34,10 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -47,7 +44,7 @@ import java.util.List;
 @ApplicationScoped
 public class CalendarQuickstart {
     private static final String APPLICATION_NAME = "Family Calendar";
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CalendarQuickstart.class);
@@ -58,6 +55,16 @@ public class CalendarQuickstart {
      */
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+
+    private boolean checkToken() {
+        File tokenFile = new File(TOKENS_DIRECTORY_PATH + "/StoredCredential");
+        return tokenFile.exists();
+    }
+
+    public void initialize() throws IOException, GeneralSecurityException {
+        com.google.api.client.http.javanet.NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        getCredentials(httpTransport);
+    }
 
     /**
      * Creates an authorized Credential object.
@@ -86,6 +93,12 @@ public class CalendarQuickstart {
 
 
     public List<Event> fetchEvents(String calendarId) {
+        if (!checkToken()) {
+            LOGGER.info("StoredCredential token does not exist. User need to call /initialize endpoint.");
+            return Collections.emptyList();
+        } else {
+            LOGGER.info("StoredCredential exists. Fetching events...");
+        }
         try {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))

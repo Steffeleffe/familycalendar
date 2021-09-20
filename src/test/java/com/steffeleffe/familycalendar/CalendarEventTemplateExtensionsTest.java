@@ -12,9 +12,7 @@ class CalendarEventTemplateExtensionsTest {
 
     @Test
     void dayIndexToday() {
-        CalendarEvent.Builder builder = new CalendarEvent.Builder();
-        builder.setStartTime(Instant.now());
-        CalendarEvent today = builder.build();
+        CalendarEvent today = getCalendarEvent(Instant.now(), null);
 
         int dayIndex = CalendarEventTemplateExtensions.dayIndex(today);
 
@@ -23,9 +21,7 @@ class CalendarEventTemplateExtensionsTest {
 
     @Test
     void dayIndexInThreeDays() {
-        CalendarEvent.Builder builder = new CalendarEvent.Builder();
-        builder.setStartTime(Instant.now().plus(3, ChronoUnit.DAYS));
-        CalendarEvent threeDaysFromNow = builder.build();
+        CalendarEvent threeDaysFromNow = getCalendarEvent(Instant.now().plus(3, ChronoUnit.DAYS), null);
 
         int dayIndex = CalendarEventTemplateExtensions.dayIndex(threeDaysFromNow);
 
@@ -34,21 +30,22 @@ class CalendarEventTemplateExtensionsTest {
 
     @Test
     void timeStringForEventSameDay() {
-        CalendarEvent.Builder builder = new CalendarEvent.Builder();
-        builder.setStartTime(Instant.parse("2007-12-03T10:15:00.00Z"));
-        builder.setEndTime(Instant.parse("2007-12-03T10:45:00.00Z"));
-        CalendarEvent event = builder.build();
+        Instant startTime = Instant.parse("2007-12-03T10:15:00.00Z");
+        Instant endTime = Instant.parse("2007-12-03T10:45:00.00Z");
+        CalendarEvent event = getCalendarEvent(startTime, endTime);
 
         String timeString = CalendarEventTemplateExtensions.timeString(event);
 
         assertThat(timeString).isEqualTo("11.15-11.45");
     }
 
+    private CalendarEvent getCalendarEvent(Instant startTime, Instant endTime) {
+        return new CalendarEvent(null, null, null, startTime, endTime, null, null);
+    }
+
     @Test
     void timeSlotForEvent() {
-        CalendarEvent.Builder builder = new CalendarEvent.Builder();
-        builder.setStartTime(Instant.parse("2007-12-03T10:15:00.00Z"));
-        CalendarEvent event = builder.build();
+        CalendarEvent event = getCalendarEvent(Instant.parse("2007-12-03T10:15:00.00Z"), null);
 
         String timeSlot = CalendarEventTemplateExtensions.timeSlot(event);
 
