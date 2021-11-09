@@ -16,4 +16,4 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Run gradle test (builds and runs tests). This skips native build.
-        run: ./gradlew test
+        run: ./mvnw test

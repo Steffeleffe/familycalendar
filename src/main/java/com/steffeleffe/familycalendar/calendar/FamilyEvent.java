@@ -1,12 +1,13 @@
 package com.steffeleffe.familycalendar.calendar;
 
+import java.net.URI;
 import java.time.Instant;
 import java.util.Set;
 
-public record CalendarEvent(
+public record FamilyEvent(
         String id,
         String summary,
-        String imageUrl,
+        URI imageUrl,
         Instant startTime,
         Instant endTime,
         Set<Participant> participants,

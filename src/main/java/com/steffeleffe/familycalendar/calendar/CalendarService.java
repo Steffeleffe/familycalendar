@@ -1,109 +1,39 @@
 package com.steffeleffe.familycalendar.calendar;
 
-import com.google.api.services.calendar.model.Event;
+import com.steffeleffe.familycalendar.calendar.googleimporter.GoogleCalendarImporter;
 import io.quarkus.scheduler.Scheduled;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.time.Instant;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CalendarService {
 
     @Inject
-    CalendarQuickstart importer;
+    GoogleCalendarImporter importer;
 
-    static List<String> googleCalendarIds = Arrays.asList(
-            "primary",
-            "3eq4uqnkhcgipgkdrrhs7ec6e4@group.calendar.google.com",
-            "rikke.vangsted@gmail.com",
-            "66aglhcacpcpupnhh9fian0a1g@group.calendar.google.com", //Rikkes work calendar
-            "hdn3t11kjru1fs823pee8g9bso@group.calendar.google.com"
-    );
-    private List<CalendarEvent> calendarEvents;
+    @Inject
+    CalendarListService calendarListService;
 
+    private List<FamilyEvent> importedFamilyEvents;
 
-    public synchronized List<CalendarEvent> getEvents() {
-        if (calendarEvents == null) {
+    public List<FamilyEvent> getEvents() {
+        if (importedFamilyEvents == null) {
             importEvents();
         }
-        return calendarEvents;
+        return importedFamilyEvents.stream()
+                .filter(e -> calendarListService.isCalendarActive(e.calendarId()))
+                .toList();
     }
 
     @Scheduled(every="30m")
     public void importEvents() {
-        List<CalendarEvent> importedEvents = new ArrayList<>();
-        for (String calendarId : googleCalendarIds) {
-            List<Event> events = importer.fetchEvents(calendarId);
-            List<CalendarEvent> eventsFromCalendar = events.stream()
-                    .map(event -> CalendarService.toCalendarEvent(event, calendarId))
-                    .collect(Collectors.toList());
-            importedEvents.addAll(eventsFromCalendar);
+        List<FamilyEvent> importedEvents = new ArrayList<>();
+        for (String calendarId : calendarListService.getCalendarIds()) {
+            importedEvents.addAll(importer.getEvents(calendarId));
         }
-        this.calendarEvents = importedEvents;
-    }
-
-
-    private static CalendarEvent toCalendarEvent(Event event, String calendarId) {
-        return new CalendarEvent(
-                event.getId(),
-                event.getSummary(),
-                getImageUrl(event.getDescription(), calendarId),
-                Instant.ofEpochMilli(event.getStart().getDateTime().getValue()),
-                Instant.ofEpochMilli(event.getEnd().getDateTime().getValue()),
-                getParticipants(event.getDescription(), calendarId),
-                calendarId);
-    }
-
-    static Set<Participant> getParticipants(String eventDescription, String calendarId) {
-        if (calendarId.equals("66aglhcacpcpupnhh9fian0a1g@group.calendar.google.com")) {
-            return Collections.singleton(Participant.RIKKE);
-        }
-        if (eventDescription == null) {
-            return Collections.emptySet();
-        }
-
-        Pattern p = Pattern.compile("[hH]vem:(.+)");
-        Matcher m = p.matcher(eventDescription);
-        if (!m.find()) {
-            return Collections.emptySet();
-        }
-        String trimmedParticipantsString = m.group(1).trim();
-        if (trimmedParticipantsString.equalsIgnoreCase("alle")) {
-            return new HashSet<>(Arrays.asList(Participant.values()));
-        }
-        String[] split = trimmedParticipantsString.split(",");
-
-        return Arrays.stream(split)
-                .map(String::trim)
-                .map(CalendarService::findParticipant)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toUnmodifiableSet());
-    }
-
-    private static Optional<Participant> findParticipant(String s) {
-        return Arrays.stream(Participant.values())
-                .filter(p -> p.id.equalsIgnoreCase(s))
-                .findFirst();
-    }
-
-    static String getImageUrl(String eventDescription, String calendarId) {
-        System.out.println(eventDescription);
-        if (calendarId.equals("66aglhcacpcpupnhh9fian0a1g@group.calendar.google.com")) {
-            return "https://www.flaticon.com/svg/static/icons/svg/3209/3209008.svg";
-        }
-        if (eventDescription == null) {
-            return null;
-        }
-
-        Pattern p = Pattern.compile("[bB]illede:(\\s+?)?(<.+?>)?([a-z0-9_/\\-:.]+)");
-        Matcher m = p.matcher(eventDescription);
-        return m.find() ? m.group(3).trim() : null;
+        this.importedFamilyEvents = importedEvents;
     }
 
 }

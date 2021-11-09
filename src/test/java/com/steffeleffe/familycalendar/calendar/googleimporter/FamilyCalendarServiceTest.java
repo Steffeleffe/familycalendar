@@ -1,22 +1,26 @@
-package com.steffeleffe.familycalendar.calendar;
+package com.steffeleffe.familycalendar.calendar.googleimporter;
 
+import com.steffeleffe.familycalendar.calendar.CalendarService;
+import com.steffeleffe.familycalendar.calendar.Participant;
+import com.steffeleffe.familycalendar.calendar.googleimporter.GoogleCalendarImporter;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.net.URI;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
-class CalendarServiceTest {
+class FamilyCalendarServiceTest {
+
+    GoogleCalendarImporter importer = new GoogleCalendarImporter();
 
     @Test
     void getParticipants() {
         String description = "Blablabla\nHvem: Ada, Ebbe\nMore text to ignore";
         String calendarId = "1234";
 
-        Set<Participant> participants = CalendarService.getParticipants(description, calendarId);
+        Set<Participant> participants = importer.getParticipants(description, calendarId);
 
         Assertions.assertThat(participants).containsExactlyInAnyOrder(Participant.EBBE, Participant.ADA);
     }
@@ -26,7 +30,7 @@ class CalendarServiceTest {
         String description = "Blablabla\nMore text to ignore";
         String calendarId = "1234";
 
-        Set<Participant> participants = CalendarService.getParticipants(description, calendarId);
+        Set<Participant> participants = importer.getParticipants(description, calendarId);
 
         Assertions.assertThat(participants).isEmpty();
     }
@@ -35,7 +39,7 @@ class CalendarServiceTest {
     void getParticipants_NoDescription() {
         String calendarId = "1234";
 
-        Set<Participant> participants = CalendarService.getParticipants(null, calendarId);
+        Set<Participant> participants = importer.getParticipants(null, calendarId);
 
         Assertions.assertThat(participants).isEmpty();
     }
@@ -45,7 +49,7 @@ class CalendarServiceTest {
         String description = "Blablabla\nHvem: alle\nMore text to ignore";
         String calendarId = "1234";
 
-        Set<Participant> participants = CalendarService.getParticipants(description, calendarId);
+        Set<Participant> participants = importer.getParticipants(description, calendarId);
 
         Assertions.assertThat(participants).containsExactlyInAnyOrder(Participant.EBBE, Participant.ADA, Participant.RIKKE, Participant.MARIE, Participant.STEFFEN);
     }
@@ -54,7 +58,7 @@ class CalendarServiceTest {
     void getParticipants_RikkeWorkCalendar() {
         String calendarId = "66aglhcacpcpupnhh9fian0a1g@group.calendar.google.com";
 
-        Set<Participant> participants = CalendarService.getParticipants(null, calendarId);
+        Set<Participant> participants = importer.getParticipants(null, calendarId);
 
         Assertions.assertThat(participants).containsExactlyInAnyOrder(Participant.RIKKE);
     }
@@ -64,18 +68,18 @@ class CalendarServiceTest {
         String description = "Blablabla\nBillede: http://example.com/picture.svg\nMore text to ignore";
         String calendarId = "1234";
 
-        String imageUrl = CalendarService.getImageUrl(description, calendarId);
+        URI imageUrl = importer.getImageUrl(description, calendarId);
 
-        assertThat(imageUrl).isEqualTo("http://example.com/picture.svg");
+        assertThat(imageUrl).isEqualTo(URI.create("http://example.com/picture.svg"));
     }
 
     @Test
     void getImageUrl_RikkeWorkCalendar() {
         String calendarId = "66aglhcacpcpupnhh9fian0a1g@group.calendar.google.com";
 
-        String imageUrl = CalendarService.getImageUrl(null, calendarId);
+        URI imageUrl = importer.getImageUrl(null, calendarId);
 
-        assertThat(imageUrl).isEqualTo("https://www.flaticon.com/svg/static/icons/svg/3209/3209008.svg");
+        assertThat(imageUrl).isEqualTo(URI.create("https://www.flaticon.com/svg/static/icons/svg/3209/3209008.svg"));
     }
 
     @Test
@@ -83,9 +87,9 @@ class CalendarServiceTest {
         String description = "Billede:<a href=\"https://www.flaticon.com/free-icon/shower_1752086\" id=\"ow437\" __is_owner=\"true\">https://image.flaticon.com/icons/png/512/1752/1752086.png</a><br>Hvem: Ada, Ebbe, Marie";
         String calendarId = "1234";
 
-        String imageUrl = CalendarService.getImageUrl(description, calendarId);
+        URI imageUrl = importer.getImageUrl(description, calendarId);
 
-        assertThat(imageUrl).isEqualTo("https://image.flaticon.com/icons/png/512/1752/1752086.png");
+        assertThat(imageUrl).isEqualTo(URI.create("https://image.flaticon.com/icons/png/512/1752/1752086.png"));
     }
 
     @Test
@@ -93,7 +97,7 @@ class CalendarServiceTest {
         String description = "Blablabla\nMore text to ignore";
         String calendarId = "1234";
 
-        String imageUrl = CalendarService.getImageUrl(description, calendarId);
+        URI imageUrl = importer.getImageUrl(description, calendarId);
 
         assertThat(imageUrl).isNull();
     }
@@ -102,7 +106,7 @@ class CalendarServiceTest {
     void getImageUrl_NoDescription() {
         String calendarId = "1234";
 
-        String imageUrl = CalendarService.getImageUrl(null, calendarId);
+        URI imageUrl = importer.getImageUrl(null, calendarId);
 
         assertThat(imageUrl).isNull();
     }
