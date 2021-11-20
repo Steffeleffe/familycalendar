@@ -8,78 +8,110 @@
             body {
                  background-color: darkslategrey;
             }
-             .calendar {
-                 display: grid;
-                 grid-template-rows: [dayHeader] auto{#for slot in timeSlots} [time{slot}] auto{/for} ;
-                 grid-template-columns: [day0] 1fr 2em [day1] 1fr 2em [day2] 1fr 2em [day3] 1fr 2em [day4] 1fr ;
-                 grid-gap: 0.1em;
+            .calendar {
+                display: grid;
+                grid-auto-flow: column;
+                grid-template-columns: repeat(5, 1fr);
+                grid-template-rows: repeat(3, auto);
+                grid-gap: 2em;
             }
-             .day {
-                 font-weight: bold;
-                 font-size: larger;
-                 font-family: sans-serif;
-                 text-align: center;
-                 color: white;
+            .day {
+                font-weight: bold;
+                font-size: larger;
+                font-family: sans-serif;
+                text-align: center;
+                color: white;
             }
-             .event {
-                 border-style: solid;
-                 padding: 0.5em;
+            .event {
+                height: 4em;
+                border: 1px solid;
+                padding: 10px;
+                margin-bottom: 2px;
             }
-             .day {
-                 font-weight: bold;
-                 font-size: larger;
-                 font-family: sans-serif;
-                 text-align: center;
-                 color: white;
+            .day {
+                font-weight: bold;
+                font-size: larger;
+                font-family: sans-serif;
+                text-align: center;
+                color: white;
             }
-             .eventTime {
-                 font-size: small;
-                 font-family: sans-serif;
+            .eventTime {
+                font-size: small;
+                font-family: sans-serif;
             }
-             .eventDescription {
-                 font-weight: bold;
-                 color: white;
-                 font-family: sans-serif;
+            .eventDescription {
+                font-weight: bold;
+                color: white;
+                font-family: sans-serif;
             }
-             .eventImage {
-                 max-width: 3em;
-                 max-height: 3em;
-                 float: right;
+            .eventImage {
+                max-width: 3em;
+                max-height: 3em;
+                float: right;
             }
-             .eventParticipants {
-                 display: flex;
+            .eventParticipants {
+                display: flex;
             }
-             .eventParticipant {
-                 font-family: sans-serif;
-                 border: 2pt solid white;
-                 border-radius: 50%;
-                 width: 1em;
-                 height: 1em;
-                 padding: .5em;
-                 text-align: center;
-                 font-size: 10pt;
-                 font-weight: bold;
+            .eventParticipant {
+                font-family: sans-serif;
+                border: 2pt solid white;
+                border-radius: 50%;
+                width: 1em;
+                height: 1em;
+                padding: .5em;
+                text-align: center;
+                font-size: 10pt;
+                font-weight: bold;
+            }
+
+            @media screen and (max-width: 1000px) {
+                .calendar {
+                    display: inherit;
+                }
             }
         </style>
     </head>
     <body>
         <div class="calendar">
             {#for day in days}
-            <div class="day" style="grid-row: dayHeader; grid-column: day{day.index}">{day.name}</div>
-            {/for}
-
-            {#for event in events}
-            <div class="event" style="grid-row: time{event.timeSlot}; grid-column: day{event.dayIndex}; background-color: {event.color}">
-                {#if event.imageUrl != null}
-                <img class="eventImage" src="{event.imageUrl}"/>
-                {/if}
-                <div class="eventTime">{event.timeString}</div>
-                <div class="eventDescription">{event.summary}</div>
-                <div class="eventParticipants">
-                    {#for participant in event.participants.orEmpty}
-                    <div class="eventParticipant" style="background-color: {participant.color}">{participant.abbreviation}</div>
-                    {/for}
+                <div>
+                    <div class="day">{day.name}</div>
                 </div>
+            <div class="morning">
+                {#for event in events.sorted}
+                {#if event.dayIndex is day.index && event.isBeforeNoon }
+                <div class="event" style="background-color: {event.color}">
+                    {#if event.imageUrl != null}
+                    <img class="eventImage" src="{event.imageUrl}"/>
+                    {/if}
+                    <div class="eventTime">{event.timeString}</div>
+                    <div class="eventDescription">{event.summary}</div>
+                    <div class="eventParticipants">
+                        {#for participant in event.participants.orEmpty}
+                        <div class="eventParticipant" style="background-color: {participant.color}">{participant.abbreviation}</div>
+                        {/for}
+                    </div>
+                </div>
+                {/if}
+                {/for}
+            </div>
+            <div class="evening">
+                {#for event in events.sorted}
+                {#if event.dayIndex is day.index && event.isAfterNoon }
+                <div class="event" style="background-color: {event.color}">
+                    {#if event.imageUrl != null}
+                    <img class="eventImage" src="{event.imageUrl}"/>
+                    {/if}
+                    <div class="eventTime">{event.timeString}</div>
+                    <div class="eventDescription">{event.summary}</div>
+                    <div class="eventParticipants">
+                        {#for participant in event.participants.orEmpty}
+                        <div class="eventParticipant" style="background-color: {participant.color}">{participant.abbreviation}</div>
+                        {/for}
+                    </div>
+                </div>
+                {/if}
+                {/for}
             </div>
             {/for}
         </div>

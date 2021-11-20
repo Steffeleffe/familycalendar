@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.*;
 import java.net.URI;
 import java.security.GeneralSecurityException;
@@ -64,9 +63,9 @@ public class GoogleCalendarImporter implements CalendarImporter {
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    private boolean checkToken() {
+    private boolean isTokenMissing() {
         File tokenFile = new File(TOKENS_DIRECTORY_PATH + "/StoredCredential");
-        return tokenFile.exists();
+        return !tokenFile.exists();
     }
 
     public void initialize() throws CalendarImportException {
@@ -105,7 +104,7 @@ public class GoogleCalendarImporter implements CalendarImporter {
 
 
     public synchronized  List<FamilyEvent> getEvents(String calendarId) {
-        if (!checkToken()) {
+        if (isTokenMissing()) {
             LOGGER.info("StoredCredential token does not exist. User need to call /login endpoint.");
             return Collections.emptyList();
         } else {
@@ -165,7 +164,7 @@ public class GoogleCalendarImporter implements CalendarImporter {
         }
 
 
-        Pattern p = Pattern.compile("[hH]vem:(.+)");
+        Pattern p = Pattern.compile("[hH]vem:([a-zA-Z, ]+)");
         Matcher m = p.matcher(eventDescription);
         if (!m.find()) {
             return Collections.emptySet();
@@ -207,7 +206,7 @@ public class GoogleCalendarImporter implements CalendarImporter {
     }
 
     public synchronized List<FamilyCalendar> getCalendars() {
-        if (!checkToken()) {
+        if (isTokenMissing()) {
             LOGGER.info("StoredCredential token does not exist. User need to call /login endpoint.");
             return Collections.emptyList();
         } else {

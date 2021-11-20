@@ -2,7 +2,6 @@ package com.steffeleffe.familycalendar;
 
 import com.steffeleffe.familycalendar.calendar.*;
 import com.steffeleffe.familycalendar.calendar.configuration.CalendarConfiguration;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
@@ -10,11 +9,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Path("/calendar")
 public class CalendarResource {
@@ -37,17 +32,7 @@ public class CalendarResource {
         List<FamilyEvent> events = calendarService.getEvents();
         return page.data(
                 "days", Day.getFiveDays(),
-                "events", events,
-                "timeSlots", getTimeSlots(events));
-    }
-
-    private List<String> getTimeSlots(List<FamilyEvent> events) {
-        Set<String> timeSlotSet = events.stream()
-                .map(CalendarEventTemplateExtensions::timeSlot)
-                .collect(Collectors.toUnmodifiableSet());
-        ArrayList<String> list = new ArrayList<>(timeSlotSet);
-        list.sort(null); // natural ordering for String
-        return list;
+                "events", events);
     }
 
     @GET

@@ -2,7 +2,7 @@ package com.steffeleffe.familycalendar.calendar;
 
 public enum Participant {
     STEFFEN("Steffen", "S", "cornflowerblue"),
-    MARIE("Marie", "M", "palevioletred"),
+    MARIE("Marie", "M", "yellow"),
     ADA("Ada", "A", "hotpink"),
     RIKKE("Rikke", "R", "darkseagreen"),
     EBBE("Ebbe", "E", "sandybrown"),

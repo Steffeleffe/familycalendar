@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 @TemplateExtension
@@ -29,6 +31,18 @@ public class CalendarEventTemplateExtensions {
         return event.startTime().atZone(ZONE).format(FORMATTER2);
     }
 
+    static boolean isBeforeNoon(FamilyEvent event) {
+        return event.startTime().atZone(ZONE).getHour() < 12;
+    }
+
+    static boolean isAfterNoon(FamilyEvent event) {
+        return event.startTime().atZone(ZONE).getHour() >= 12;
+    }
+
+    static List<FamilyEvent> sorted(List<FamilyEvent> events) {
+        return events.stream().sorted(Comparator.comparing(FamilyEvent::startTime)).toList();
+    }
+
     static String color(FamilyEvent event) {
         StringBuilder sb = new StringBuilder("#");
         for (int i=0; i<3; i++) {
@@ -36,4 +50,5 @@ public class CalendarEventTemplateExtensions {
         }
         return sb.toString();
     }
+
 }
