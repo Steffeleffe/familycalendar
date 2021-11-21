@@ -1,10 +1,8 @@
 package com.steffeleffe.familycalendar.calendar.configuration;
 
-import com.steffeleffe.familycalendar.calendar.Participant;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-import javax.persistence.*;
-import java.net.URI;
+import javax.persistence.Entity;
 import java.util.Optional;
 
 @Entity

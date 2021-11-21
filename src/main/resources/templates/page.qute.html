@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="google" content="notranslate"/>
+        <meta http-equiv="refresh" content="60">
         <title>Family calendar</title>
         <style>
             body {
@@ -74,9 +75,9 @@
     <body>
         <div class="calendar">
             {#for day in days}
-                <div>
-                    <div class="day">{day.name}</div>
-                </div>
+            <div>
+                <div class="day">{day.name}</div>
+            </div>
             <div class="morning">
                 {#for event in events.sorted}
                 {#if event.dayIndex is day.index && event.isBeforeNoon }

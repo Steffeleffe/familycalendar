@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CalendarListService {
@@ -37,7 +38,7 @@ public class CalendarListService {
     public List<String> getCalendarIds() {
         return getCalendars().stream()
                 .map(FamilyCalendar::id)
-                .toList();
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public boolean isCalendarActive(String calendarId) {

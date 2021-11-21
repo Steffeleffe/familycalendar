@@ -3,6 +3,7 @@ package com.steffeleffe.familycalendar.calendar.googleimporter;
 import com.steffeleffe.familycalendar.calendar.CalendarService;
 import com.steffeleffe.familycalendar.calendar.Participant;
 import com.steffeleffe.familycalendar.calendar.googleimporter.GoogleCalendarImporter;
+import io.quarkus.test.junit.QuarkusTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@QuarkusTest
 class FamilyCalendarServiceTest {
 
     GoogleCalendarImporter importer = new GoogleCalendarImporter();
@@ -79,7 +81,7 @@ class FamilyCalendarServiceTest {
 
         URI imageUrl = importer.getImageUrl(null, calendarId);
 
-        assertThat(imageUrl).isEqualTo(URI.create("https://www.flaticon.com/svg/static/icons/svg/3209/3209008.svg"));
+        assertThat(imageUrl).isEqualTo(URI.create("https://cdn-icons-png.flaticon.com/512/1165/1165602.png"));
     }
 
     @Test

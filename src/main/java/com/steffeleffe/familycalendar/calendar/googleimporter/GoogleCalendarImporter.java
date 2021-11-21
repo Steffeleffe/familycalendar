@@ -103,7 +103,7 @@ public class GoogleCalendarImporter implements CalendarImporter {
     }
 
 
-    public synchronized  List<FamilyEvent> getEvents(String calendarId) {
+    public synchronized List<FamilyEvent> getEvents(String calendarId) {
         if (isTokenMissing()) {
             LOGGER.info("StoredCredential token does not exist. User need to call /login endpoint.");
             return Collections.emptyList();
@@ -132,14 +132,13 @@ public class GoogleCalendarImporter implements CalendarImporter {
             return items.stream()
                     .filter(e -> e.getStart().getDateTime() != null)
                     .filter(e -> e.getEnd().getDateTime() != null)
-                    .map(e -> toCalendarEvent(e, calendarId)).collect(Collectors.toList());
+                    .map(e -> toCalendarEvent(e, calendarId)).collect(Collectors.toUnmodifiableList());
         } catch (IOException | GeneralSecurityException e) {
             throw new IllegalStateException(e);
         }
     }
 
     private FamilyEvent toCalendarEvent(Event event, String calendarId) {
-
         return new FamilyEvent(
                 event.getId(),
                 event.getSummary(),
@@ -221,7 +220,7 @@ public class GoogleCalendarImporter implements CalendarImporter {
             return calendars.getItems()
                     .stream()
                     .map(this::map)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toUnmodifiableList());
         } catch (IOException | GeneralSecurityException e) {
             throw new IllegalStateException(e);
         }

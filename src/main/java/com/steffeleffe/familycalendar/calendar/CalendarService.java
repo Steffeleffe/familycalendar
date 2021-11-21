@@ -6,6 +6,7 @@ import io.quarkus.scheduler.Scheduled;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CalendarService {
@@ -24,7 +25,7 @@ public class CalendarService {
         }
         return importedFamilyEvents.stream()
                 .filter(e -> calendarListService.isCalendarActive(e.calendarId()))
-                .toList();
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Scheduled(every="30m")

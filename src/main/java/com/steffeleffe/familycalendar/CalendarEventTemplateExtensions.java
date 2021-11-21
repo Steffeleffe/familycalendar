@@ -10,6 +10,7 @@ import java.time.temporal.ChronoField;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @TemplateExtension
 public class CalendarEventTemplateExtensions {
@@ -40,7 +41,9 @@ public class CalendarEventTemplateExtensions {
     }
 
     static List<FamilyEvent> sorted(List<FamilyEvent> events) {
-        return events.stream().sorted(Comparator.comparing(FamilyEvent::startTime)).toList();
+        return events.stream()
+                .sorted(Comparator.comparing(FamilyEvent::startTime))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     static String color(FamilyEvent event) {
